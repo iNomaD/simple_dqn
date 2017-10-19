@@ -142,3 +142,6 @@ class GymEnvironment(Environment):
   def isTerminal(self):
     assert self.terminal is not None
     return self.terminal
+
+  def render(self):
+    self.gym.render()

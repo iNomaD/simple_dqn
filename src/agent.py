@@ -123,7 +123,7 @@ class Agent:
       # perform game step
       self.step(self.exploration_rate_test)
 
-  def play(self, num_games):
+  def play(self, num_games, args):
     # just make sure there is history_length screens to form a state
     self._restartRandom()
     for i in xrange(num_games):
@@ -131,5 +131,7 @@ class Agent:
       terminal = False
       while not terminal:
         action, reward, screen, terminal = self.step(self.exploration_rate_test)
+        if args.display_screen and args.environment=='gym':
+          self.env.render()
         # add experiences to replay memory for visualization
         self.mem.add(action, reward, screen, terminal)

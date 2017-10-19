@@ -115,7 +115,7 @@ if args.play_games:
   # Set env mode test so that loss of life is not considered as terminal
   env.setMode('test')
   stats.reset()
-  agent.play(args.play_games)
+  agent.play(args.play_games, args)
   stats.write(0, "play")
   if args.visualization_file:
     from visualization import visualize
