@@ -48,7 +48,7 @@ netarg.add_argument("--batch_norm", type=str2bool, default=False, help="Use batc
 #missing: bufferSize=512,valid_size=500,min_reward=-1,max_reward=1
 
 neonarg = parser.add_argument_group('Neon')
-neonarg.add_argument('--backend', choices=['cpu', 'gpu'], default='gpu', help='backend type')
+neonarg.add_argument('--backend', choices=['cpu', 'gpu', 'mkl'], default='gpu', help='backend type')
 neonarg.add_argument('--device_id', type=int, default=0, help='gpu device id (only used with GPU backend)')
 neonarg.add_argument('--datatype', choices=['float16', 'float32', 'float64'], default='float32', help='default floating point precision for backend [f64 for cpu only]')
 neonarg.add_argument('--stochastic_round', const=True, type=int, nargs='?', default=False, help='use stochastic rounding [will round to BITS number of bits if specified]')
@@ -94,7 +94,8 @@ if args.environment == 'ale':
   env = ALEEnvironment(args.game, args)
   logger.info("Using ALE Environment")
 elif args.environment == 'gym':
-  logger.handlers.pop()
+  # logger does not work with this line
+  #logger.handlers.pop()
   env = GymEnvironment(args.game, args)
   logger.info("Using Gym Environment")
 else:
