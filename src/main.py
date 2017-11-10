@@ -30,7 +30,7 @@ envarg.add_argument("--record_screen_path", help="Record game screens under this
 envarg.add_argument("--record_sound_filename", help="Record game sound in this file.")
 
 memarg = parser.add_argument_group('Replay memory')
-memarg.add_argument("--replay_size", type=int, default=1000000, help="Maximum size of replay memory.")
+memarg.add_argument("--replay_size", type=int, default=250000, help="Maximum size of replay memory.")
 memarg.add_argument("--history_length", type=int, default=4, help="How many screen frames form a state.")
 
 netarg = parser.add_argument_group('Deep Q-learning network')
@@ -69,8 +69,8 @@ nvisarg.add_argument("--visualization_file", help="Write layer visualization to 
 
 mainarg = parser.add_argument_group('Main loop')
 mainarg.add_argument("--random_steps", type=int, default=50000, help="Populate replay memory with random steps before starting learning.")
-mainarg.add_argument("--train_steps", type=int, default=250000, help="How many training steps per epoch.")
-mainarg.add_argument("--test_steps", type=int, default=125000, help="How many testing steps after each epoch.")
+mainarg.add_argument("--train_steps", type=int, default=50000, help="How many training steps per epoch.")
+mainarg.add_argument("--test_steps", type=int, default=12500, help="How many testing steps after each epoch.")
 mainarg.add_argument("--epochs", type=int, default=200, help="How many epochs to run.")
 mainarg.add_argument("--start_epoch", type=int, default=0, help="Start from this epoch, affects exploration rate and names of saved snapshots.")
 mainarg.add_argument("--play_games", type=int, default=0, help="How many games to play, suppresses training and testing.")
@@ -120,7 +120,7 @@ if args.play_games:
   if args.visualization_file:
     from visualization import visualize
     # use states recorded during gameplay. NB! Check buffer size, that it can accomodate one game!
-    states = [agent.mem.getState(i) for i in xrange(agent.history_length, agent.mem.current - agent.random_starts)]
+    states = [agent.mem.getState(i) for i in range(agent.history_length, agent.mem.current - agent.random_starts)]
     logger.info("Collected %d game states" % len(states))
     import numpy as np
     states = np.array(states)
@@ -138,7 +138,7 @@ if args.random_steps:
   stats.write(0, "random")
 
 # loop over epochs
-for epoch in xrange(args.start_epoch, args.epochs):
+for epoch in range(args.start_epoch, args.epochs):
   logger.info("Epoch #%d" % (epoch + 1))
 
   if args.train_steps:

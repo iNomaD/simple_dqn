@@ -58,7 +58,7 @@ class DeepQNetwork:
       self.optimizer = Adadelta(decay = args.decay_rate, 
           stochastic_round = args.stochastic_round)
     else:
-      assert false, "Unknown optimizer"
+      assert False, "Unknown optimizer"
 
     # create target model
     self.train_iterations = 0

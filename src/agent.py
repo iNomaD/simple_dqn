@@ -29,7 +29,7 @@ class Agent:
   def _restartRandom(self):
     self.env.restart()
     # perform random number of dummy actions to produce more stochastic games
-    for i in xrange(random.randint(self.history_length, self.random_starts) + 1):
+    for i in range(random.randint(self.history_length, self.random_starts) + 1):
       reward = self.env.act(0)
       terminal = self.env.isTerminal()
       if terminal:
@@ -67,7 +67,7 @@ class Agent:
     terminal = self.env.isTerminal()
 
     # print reward
-    if reward <> 0:
+    if reward != 0:
       logger.debug("Reward: %d" % reward)
 
     # add screen to buffer
@@ -88,16 +88,16 @@ class Agent:
     #call env.restart first so that env.reset is called before step.
     self.env.restart()
     # play given number of steps
-    for i in xrange(random_steps):
+    for i in range(random_steps):
       # use exploration rate 1 = completely random
       action, reward, screen, terminal = self.step(1)
       self.mem.add(action, reward, screen, terminal)
 
   def train(self, train_steps, epoch = 0):
     # do not do restart here, continue from testing
-    #self._restartRandom()
+    self._restartRandom()
     # play given number of steps
-    for i in xrange(train_steps):
+    for i in range(train_steps):
       # perform game step
       action, reward, screen, terminal = self.step(self._explorationRate())
       self.mem.add(action, reward, screen, terminal)
@@ -107,7 +107,7 @@ class Agent:
       # train after every train_frequency steps
       if self.mem.count > self.mem.batch_size and i % self.train_frequency == 0:
         # train for train_repeat times
-        for j in xrange(self.train_repeat):
+        for j in range(self.train_repeat):
           # sample minibatch
           minibatch = self.mem.getMinibatch()
           # train the network
@@ -119,14 +119,14 @@ class Agent:
     # just make sure there is history_length screens to form a state
     self._restartRandom()
     # play given number of steps
-    for i in xrange(test_steps):
+    for i in range(test_steps):
       # perform game step
       self.step(self.exploration_rate_test)
 
   def play(self, num_games, args):
     # just make sure there is history_length screens to form a state
     self._restartRandom()
-    for i in xrange(num_games):
+    for i in range(num_games):
       # play until terminal state
       terminal = False
       while not terminal:

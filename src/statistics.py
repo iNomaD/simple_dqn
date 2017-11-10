@@ -18,7 +18,7 @@ class Statistics:
     self.csv_name = args.csv_file
     if self.csv_name:
       logger.info("Results are written to %s" % args.csv_file)
-      self.csv_file = open(self.csv_name, "wb")
+      self.csv_file = open(self.csv_name, "wt")
       self.csv_writer = csv.writer(self.csv_file)
       self.csv_writer.writerow((
           "epoch",
@@ -49,8 +49,8 @@ class Statistics:
     self.num_games = 0
     self.game_rewards = 0
     self.average_reward = 0
-    self.min_game_reward = sys.maxint
-    self.max_game_reward = -sys.maxint - 1
+    self.min_game_reward = sys.maxsize
+    self.max_game_reward = -sys.maxsize - 1
     self.last_exploration_rate = 1
     self.average_cost = 0
 
