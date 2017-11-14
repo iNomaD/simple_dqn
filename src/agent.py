@@ -84,7 +84,7 @@ class Agent:
 
     return action, reward, screen, terminal
 
-  def play_random(self, random_steps):
+  def play_random(self, random_steps, args):
     #call env.restart first so that env.reset is called before step.
     self.env.restart()
     # play given number of steps
@@ -92,6 +92,8 @@ class Agent:
       # use exploration rate 1 = completely random
       action, reward, screen, terminal = self.step(1)
       self.mem.add(action, reward, screen, terminal)
+      if args.display_screen and args.environment == 'gym':
+        self.env.render()
 
   def train(self, train_steps, epoch = 0):
     # do not do restart here, continue from testing

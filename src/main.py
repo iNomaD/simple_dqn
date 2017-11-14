@@ -134,7 +134,7 @@ if args.random_steps:
   # Set env mode test so that loss of life is considered as terminal
   env.setMode('train')
   stats.reset()
-  agent.play_random(args.random_steps)
+  agent.play_random(args.random_steps, args)
   stats.write(0, "random")
 
 # loop over epochs

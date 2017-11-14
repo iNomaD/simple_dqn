@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 import cv2
+import numpy as np
 logger = logging.getLogger(__name__)
 
 class Environment:
@@ -115,6 +116,7 @@ class GymEnvironment(Environment):
   # For use with Open AI Gym Environment
   def __init__(self, env_id, args):
     import gym
+    self.env_id = env_id
     self.gym = gym.make(env_id)
     self.obs = None
     self.terminal = None
@@ -122,22 +124,55 @@ class GymEnvironment(Environment):
     self.screen_width = args.screen_width
     self.screen_height = args.screen_height
 
+    # Define actions for games (gym-0.9.4 and ALE 0.5.1)
+    if env_id == "Pong-v0":
+      self.action_space = [0, 2, 5] # [NONE, UP, DOWN]
+    elif env_id == "Breakout-v0":
+      self.action_space = [1, 2, 3] # [FIRE, RIGHT, LEFT]
+    else:
+      self.action_space = [i for i in range(0, self.gym.action_space.n)] # 9 discrete actions are available
+
   def numActions(self):
     import gym
     assert isinstance(self.gym.action_space, gym.spaces.Discrete)
-    return self.gym.action_space.n
+    return len(self.action_space)
 
   def restart(self):
     self.obs = self.gym.reset()
     self.terminal = False
 
   def act(self, action):
-    self.obs, reward, self.terminal, _ = self.gym.step(action)
+    self.obs, reward, self.terminal, _ = self.gym.step(self.action_space[action])
     return reward
+
+  # We need to preprocess the images to speed up training
+  mspacman_color = np.array([210, 164, 74]).mean()
+  pong_bg_color = np.array([144, 72, 17]).mean()
+  breakout_wall_color = np.array([142, 142, 142]).mean()
+
+  def _preprocess(self, img):
+    # from scipy.misc import toimage
+    # toimage(img).show()
+    if self.env_id == "MsPacman-v0":
+      img = img[0:172]
+      img = img.mean(axis=2)
+      img[img == GymEnvironment.mspacman_color] = 0
+    elif self.env_id == "Pong-v0":
+      img = img[34:194]
+      img = img.mean(axis=2)
+      img[img == GymEnvironment.pong_bg_color] = 0
+    elif self.env_id == "Breakout-v0":
+      img = img[20:198]
+      img = img.mean(axis=2)
+      img[img == GymEnvironment.breakout_wall_color] = 25
+    else:
+      return cv2.resize(cv2.cvtColor(self.obs, cv2.COLOR_RGB2GRAY), (self.screen_width, self.screen_height))
+    return cv2.resize(img, (self.screen_width, self.screen_height))
 
   def getScreen(self):
     assert self.obs is not None
-    return cv2.resize(cv2.cvtColor(self.obs, cv2.COLOR_RGB2GRAY), (self.screen_width, self.screen_height))
+    # return cv2.resize(cv2.cvtColor(self.obs, cv2.COLOR_RGB2GRAY), (self.screen_width, self.screen_height))
+    return self._preprocess(self.obs)
 
   def isTerminal(self):
     assert self.terminal is not None
